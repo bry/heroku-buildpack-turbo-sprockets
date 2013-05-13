@@ -59,6 +59,7 @@ class LanguagePack::Ruby < LanguagePack::Base
       create_database_yml
       install_binaries
       run_assets_precompile_rake_task
+      run_rdoc_rake_task
     end
   end
 
@@ -571,6 +572,18 @@ params = CGI.parse(uri.query || "")
       time = Benchmark.realtime { pipe("env PATH=$PATH:bin bundle exec rake assets:precompile 2>&1") }
       if $?.success?
         puts "Asset precompilation completed (#{"%.2f" % time}s)"
+      end
+    end
+  end
+
+  def run_rdoc_rake_task
+    if rake_task_defined?("rdoc")
+      require 'benchmark'
+
+      topic "Running: rake rdoc"
+      time = Benchmark.realtime { pipe("env PATH=$PATH:bin bundle exec rake rdoc 2>&1") }
+      if $?.success?
+        puts "Rake rdoc completed (#{"%.2f" % time}s)"
       end
     end
   end
